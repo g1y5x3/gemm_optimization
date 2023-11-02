@@ -10,7 +10,7 @@ from tinygrad.shape.symbolic import sym_infer
 from tinygrad.helpers import ansilen
 
 if __name__ == "__main__":
-  # Define matrices A, B
+
   A = np.random.randn(4096, 4096).astype(np.float32) 
   B = np.random.randn(4096, 4096).astype(np.float32)
   
@@ -44,4 +44,4 @@ if __name__ == "__main__":
   tm = time_linearizer(lin, rawbufs, allow_test_size=False, cnt=10)
   gflops = sym_infer(lin.info.flops, {k:k.min for k in vars_from_ast(lin.ast)})*1e-9/tm
 
-  print(f"*** {tm*1000:7.2f} ms : kernel {lin.display_name+' '*(37-ansilen(lin.display_name))} {str(lin.global_size):18s} {str(lin.local_size):12s} takes {tm*1000:7.2f} ms, {gflops:6.0f} GFLOPS")
+  print(f"dumb kernel {lin.display_name+' '*(37-ansilen(lin.display_name))} {str(lin.global_size):18s} {str(lin.local_size):12s} takes {tm*1000:7.2f} ms, {gflops:6.0f} GFLOPS")
