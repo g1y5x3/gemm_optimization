@@ -76,12 +76,12 @@ def run_kernel(name, kernel, local_dim, global_dim):
 
   prog = CUDAProgram("gemm", compile_cuda(kernel))
 
-  tm = min([prog(global_dim, local_dim, a, b, c, wait=True) for _ in range(10)])
+  tm = min([prog(a, b, c, global_size=global_dim, local_size=local_dim, wait=True) for _ in range(10)])
   print(f"{name}    {str(global_dim):18s} {str(local_dim):12s} takes {tm*1000:7.2f} ms, {FLOPS*1e-9/tm:6.0f} GFLOPS")
   
   np.testing.assert_allclose(A @ B, c.toCPU().reshape((N,N)), atol=1e-3, rtol=1e-3)
 
-run_kernel("dumb kernel v1 ", kernel0_1, [1, 1, 1],   [4096, 4096, 1])
+run_kernel("dumb kernel v1 ", kernel0_1, (1, 1, 1),   (4096, 4096, 1))
 run_kernel("dumb kernel v2 ", kernel0_2, [1, 1, 1],   [4096, 4096, 1])
 run_kernel("naive kernel v1", kernel1_1, [32, 32, 1], [128, 128, 1])
 run_kernel("naive kernel v2", kernel1_2, [32, 32, 1], [128, 128, 1])
