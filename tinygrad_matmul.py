@@ -48,10 +48,11 @@ if __name__ == "__main__":
   # create buffers
   rawbufs = [device.buffer(sched[2].out.st.size(), sched[2].out.dtype)] + [device.buffer(x.st.size(), x.dtype) for x in sched[2].inputs]
 
-  # without any optimization - dump kernel
+  # dump kernel (no optimization)
   lin = Linearizer(sched[2].ast, device.linearizer_opts)
   run_kernel("dumb kernel ", lin, rawbufs)
 
+  # naive kernel
   lin = Linearizer(sched[2].ast, device.linearizer_opts)
   lin.apply_opt(Opt(op=OptOps.LOCAL, axis=0, amt=32))
   lin.apply_opt(Opt(op=OptOps.LOCAL, axis=1, amt=32))
