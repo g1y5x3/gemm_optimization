@@ -15,7 +15,6 @@ def run_kernel(name, lin, rawbufs):
   prg = cast(Compiled, Device[Device.DEFAULT]).to_program(lin)
 
   if getenv("DEBUG",0) > 0: 
-    lin.printbufs()
     print(prg.prg)
 
   tm = time_linearizer(lin, rawbufs, allow_test_size=False, cnt=10)
@@ -50,12 +49,12 @@ if __name__ == "__main__":
 
   # dump kernel (no optimization)
   lin = Linearizer(sched[2].ast, device.linearizer_opts)
-  run_kernel("dumb kernel ", lin, rawbufs)
+  run_kernel("dumb kernel             ", lin, rawbufs)
 
-  # naive kernel
+  # naive kernel & global memory coalescing
   lin = Linearizer(sched[2].ast, device.linearizer_opts)
   lin.apply_opt(Opt(op=OptOps.LOCAL, axis=0, amt=32))
   lin.apply_opt(Opt(op=OptOps.LOCAL, axis=1, amt=32))
+  run_kernel("global memory coalescing", lin, rawbufs)
 
-  run_kernel("naive kernel", lin, rawbufs)
-
+  # shared memory cache-blocking
