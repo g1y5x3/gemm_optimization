@@ -49,12 +49,18 @@ if __name__ == "__main__":
 
   # dump kernel (no optimization)
   lin = Linearizer(sched[2].ast, device.linearizer_opts)
-  run_kernel("dumb kernel             ", lin, rawbufs)
+  run_kernel("dumb kernel               ", lin, rawbufs)
 
   # naive kernel & global memory coalescing
   lin = Linearizer(sched[2].ast, device.linearizer_opts)
   lin.apply_opt(Opt(op=OptOps.LOCAL, axis=0, amt=32))
   lin.apply_opt(Opt(op=OptOps.LOCAL, axis=1, amt=32))
-  run_kernel("global memory coalescing", lin, rawbufs)
+  run_kernel("global memory coalescing  ", lin, rawbufs)
 
   # shared memory cache-blocking
+  # lin = Linearizer(sched[2].ast, device.linearizer_opts)
+  # lin.apply_opt(Opt(op=OptOps.LOCAL, axis=0, amt=32))
+  # lin.apply_opt(Opt(op=OptOps.LOCAL, axis=1, amt=32))
+  # lin.apply_opt(Opt(op=OptOps.UNROLL, axis=0, amt=32))
+  # run_kernel("shared memory memory block", lin, rawbufs)
+
